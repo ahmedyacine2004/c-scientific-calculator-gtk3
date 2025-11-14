@@ -5,7 +5,7 @@ struct token {
     double value;
     char opr;
     unsigned precedence;
-    bool function;
+    char function;
     char parentheses;
     bool terminator;
 };
@@ -30,3 +30,11 @@ token lastElement(token src[]);
 //  Converts a mathematical expression(string) from infix to postfix such that the final expression is represenred with an array tokkens
 
 void postfix(char* string, token output[]);
+
+//  evaluates a mathematical expression(string) and returns its result
+
+double evaluate(char* string);
+
+//  removes the last element of a stack
+
+void rem(token stack[]);
