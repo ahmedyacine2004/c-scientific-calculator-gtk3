@@ -3,7 +3,6 @@
 #include <math.h>
 #include "evaluation.h"
 
-
 void initStack(stack* Stack) {
     Stack->top = -1;
 }
@@ -65,6 +64,7 @@ void tokenise(char* string, stack* tokens) {
                 case 't': temp.function = 't'; push(tokens, temp); initToken(&temp);                      break;
                 case 'l': temp.function = 'l'; push(tokens, temp); initToken(&temp);                      break;
                 case 'S': temp.function = 'S'; push(tokens, temp); initToken(&temp);                      break;
+                case 'f': temp.function = 'f'; push(tokens, temp); initToken(&temp);                      break;
             }
             if ((tokens->array[tokens->top].parentheses == ')' || tokens->array[tokens->top].value == 2.718281 || tokens->array[tokens->top].value == 3.141592) && ((string[i+1] >= '0' && string[i+1] <= '9') || string[i+1] == 'e' || string[i+1] == 'p')) push(tokens, multiply);
         }
@@ -112,19 +112,29 @@ double Evaluate(char* string) {
                 case 'c': Stack.array[Stack.top].value = cos(Stack.array[Stack.top].value); break;
                 case 's': Stack.array[Stack.top].value = sin(Stack.array[Stack.top].value); break;
                 case 't': Stack.array[Stack.top].value = tan(Stack.array[Stack.top].value); break;
-                case 'S': Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
-                // case 'l': Stack.array[Stack.top].value = ln(Stack.array[Stack.top].value); break;
-            }
+                case 'S': if (Stack.array[Stack.top].value >= 0) {
+                                Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
+                            } else {return NAN; break;}
+                // case 'l': if(Stack.array[Stack.top].value >= 0) {
+                //                 Stack.array[Stack.top].value = ln(Stack.array[Stack.top].value); break;
+                //             } else {return NAN; break;}
+                // case 'f': if(isNatural(Stack.array[Stack.top].value)) {
+                //           Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
+                //             } else {return NAN; break;}          
+                
+            }   
         } else {
             switch (queue.array[i].operator) {
                 case '+': Stack.array[Stack.top-1].value += Stack.array[Stack.top].value; Stack.top--; break;
                 case '-': Stack.array[Stack.top-1].value -= Stack.array[Stack.top].value; Stack.top--; break;
                 case '*': Stack.array[Stack.top-1].value *= Stack.array[Stack.top].value; Stack.top--; break;
                 case '/': Stack.array[Stack.top-1].value /= Stack.array[Stack.top].value; Stack.top--; break;
-                case '^': Stack.array[Stack.top-1].value =  pow(Stack.array[Stack.top-1].value, Stack.array[Stack.top].value); Stack.top--; break;
+                case '^': if (Stack.array[Stack.top-1].value || Stack.array[Stack.top].value) {
+                          Stack.array[Stack.top-1].value =  pow(Stack.array[Stack.top-1].value, Stack.array[Stack.top].value); Stack.top--; break;
+                          } else {return NAN; break;}
                 
             }
         }
     }
     return Stack.array[0].value;
-}   
+} 
