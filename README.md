@@ -18,7 +18,6 @@ pacman -Syu          # Full system upgrade
 # ⚠️ Close & reopen terminal if required
 ```
 
-
 ---
 
 ## 3️⃣ Install Required Packages
@@ -53,7 +52,7 @@ ls   # Should show main.c, calc.c, calc.h
 ## 6️⃣ Compile the Scientific Calculator
 
 ```bash
-gcc main.c calc.c -o calculator $(pkg-config --cflags --libs gtk+-3.0) -lm
+gcc main.c calc.c -o dist/calculator $(pkg-config --cflags --libs gtk+-3.0) -lm
 # Explanation:
 # - $(pkg-config --cflags --libs gtk+-3.0) → fetch GTK3 compiler & linker flags
 # - -lm → link the math library
@@ -96,3 +95,4 @@ This version:
 - ✅ Includes **step numbers**
 - ✅ Shows **all commands inside bash code blocks**
 - ✅ Contains **notes, tips, warnings, and emojis**
+```
