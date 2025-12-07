@@ -7,7 +7,7 @@ double multiply(double a, double b);
 double divide(double a, double b);
 
 double power(double a, double b);
-int factorial(int n);
+double factorial(double n);
 double exponential(double x);
 double square_root(double x);
 

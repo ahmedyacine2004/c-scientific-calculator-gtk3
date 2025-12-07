@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "fonction.h"
+#include "custom_math.h"
 #include <math.h>
 
 double power(double a,double b){
@@ -17,16 +17,17 @@ double power(double a,double b){
   return result;
 } 
 double factorial(double a){
-    int i, F=1;
-    if(a==0) return 1;
+    double F = 1;
     if(a<0) return NAN; //erreur
-    for(i=1;i<=a;i++){
+    for(int i=1;i<=a;i++){
         F=F*i;
     } return F;
 } 
 
 double square_root(double a) {
-    if (a < 0) return NAN; // erreur
+    int test = a;
+    if (a - test) return NAN;
+           if (a < 0) return NAN; // erreur
     double guess = a / 2;
     for (int i = 0; i < 20; i++) {
         guess = (guess + a / guess) / 2.0;

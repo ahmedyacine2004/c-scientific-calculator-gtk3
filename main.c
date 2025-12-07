@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "evaluation.h"
-#include "baseConversion.h"
 
 GtkWidget *entry;
 GtkCssProvider *css_provider;
@@ -15,6 +14,8 @@ stack SStack;
 typedef struct but but;
 struct but { const char *label; const char *tok; };
 char angle = 'R';
+
+double result = 0;
 
 // Append character to entry
 void on_button_append(GtkWidget *widget, gpointer data) {
@@ -63,6 +64,17 @@ void on_angle(GtkWidget *widget, gpointer date) {
     }
 }
 
+void on_ans(GtkWidget *widget, gpointer date){
+    const char *txt = "ANS";
+    const char *current = gtk_entry_get_text(GTK_ENTRY(entry));
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "%s%s", current, txt);
+    gtk_entry_set_text(GTK_ENTRY(entry), buffer);
+    const char *evText = "a";
+    strcat(evString, evText);
+
+}
+
 // Evaluate expression
 void on_equals(GtkWidget *widget, gpointer data) {
     // const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
@@ -71,7 +83,7 @@ void on_equals(GtkWidget *widget, gpointer data) {
     if (evString[0]) {
         const char* cond = "~";
         strcat(evString, cond); 
-        double result = Evaluate(evString);
+        result = Evaluate(evString);
         char buffer[256];
         snprintf(buffer, sizeof(buffer), "%g", result);
         gtk_entry_set_text(GTK_ENTRY(entry), buffer);
@@ -228,6 +240,21 @@ int main(int argc, char *argv[]) {
     gtk_widget_set_vexpand(Angle, TRUE);
     g_signal_connect(Angle, "clicked", G_CALLBACK(on_angle), NULL);
     gtk_grid_attach(GTK_GRID(grid), Angle, 4, 4, 2, 1);
+
+    GtkWidget *ans = gtk_button_new_with_label("ANS");
+    gtk_widget_set_hexpand(ans, TRUE);
+    gtk_widget_set_vexpand(ans, TRUE);
+    g_signal_connect(ans, "clicked", G_CALLBACK(on_ans), NULL);
+    gtk_grid_attach(GTK_GRID(grid), ans, 5, 3, 1, 1);
+
+    //unary minus operator
+
+    but unMIN = {"∸", "_"};
+    GtkWidget *UNMIN = gtk_button_new_with_label(unMIN.label);
+    gtk_widget_set_hexpand(UNMIN, TRUE);
+    gtk_widget_set_vexpand(UNMIN, TRUE);
+    g_signal_connect(UNMIN, "clicked", G_CALLBACK(on_button_append2), (gpointer)&unMIN);
+    gtk_grid_attach(GTK_GRID(grid),UNMIN, 4, 3, 1, 1);
 
     // Clear button
     GtkWidget *clear = gtk_button_new_with_label("Clear");

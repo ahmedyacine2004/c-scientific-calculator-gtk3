@@ -8,6 +8,7 @@
 //a global variable across all files which must be defined in the first .c file to be compiled
 
 extern char angle;
+extern double result;
 
 // this structure facilates the transition from infix to postfix through assigning components to each significant part of the string
 
