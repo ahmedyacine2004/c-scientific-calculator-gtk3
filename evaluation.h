@@ -23,11 +23,15 @@ struct token {
 
 // this structure combines an array of the previous strutures with an additional component "top" which allows us to determine where the array ends
 
-typedef struct stack stack;
+
 struct stack {
     token array[1000];
     int top;
 };
+
+typedef struct stack stack;
+
+extern stack SStack;
 
 //this prcedure intilizes the top of a stack to -1
 

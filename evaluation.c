@@ -102,42 +102,41 @@ void postfix(char* infix, stack* postfix) {
 }
 
 double Evaluate(char* string) {
-    stack queue, Stack;
-    initStack(&Stack);
+    stack queue;
     postfix(string, &queue);
     for (int i = 0; i <= queue.top; i++) {
-        if(queue.array[i].isNumber) {push(&Stack, queue.array[i]);}
+        if(queue.array[i].isNumber) {push(&SStack, queue.array[i]);}
         else if (queue.array[i].function) {
             switch (queue.array[i].function) {
-                case 'c': if (angle == 'D') Stack.array[Stack.top].value *= (3.141592/180);    
-                          Stack.array[Stack.top].value = cos(Stack.array[Stack.top].value); break;
-                case 's': if (angle == 'D') Stack.array[Stack.top].value *= (3.141592/180);
-                          Stack.array[Stack.top].value = sin(Stack.array[Stack.top].value); break;
-                case 't': if (angle == 'D') Stack.array[Stack.top].value *= (3.141592/180);
-                          Stack.array[Stack.top].value = tan(Stack.array[Stack.top].value); break;
-                case 'S': if (Stack.array[Stack.top].value >= 0) {
-                                Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
+                case 'c': if (angle == 'D') SStack.array[SStack.top].value *= (3.141592/180);    
+                          SStack.array[SStack.top].value = cos(SStack.array[SStack.top].value); break;
+                case 's': if (angle == 'D') SStack.array[SStack.top].value *= (3.141592/180);
+                          SStack.array[SStack.top].value = sin(SStack.array[SStack.top].value); break;
+                case 't': if (angle == 'D') SStack.array[SStack.top].value *= (3.141592/180);
+                          SStack.array[SStack.top].value = tan(SStack.array[SStack.top].value); break;
+                case 'S': if (SStack.array[SStack.top].value >= 0) {
+                                SStack.array[SStack.top].value = sqrt(SStack.array[SStack.top].value); break;
                             } else {return NAN; break;}
-                // case 'l': if(Stack.array[Stack.top].value >= 0) {
-                //                 Stack.array[Stack.top].value = ln(Stack.array[Stack.top].value); break;
+                // case 'l': if(SStack.array[SStack.top].value >= 0) {
+                //                 SStack.array[SStack.top].value = ln(SStack.array[SStack.top].value); break;
                 //             } else {return NAN; break;}
-                // case 'f': if(isNatural(Stack.array[Stack.top].value)) {
-                //           Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
+                // case 'f': if(isNatural(SStack.array[SStack.top].value)) {
+                //           SStack.array[SStack.top].value = sqrt(SStack.array[SStack.top].value); break;
                 //             } else {return NAN; break;}          
                 
             }   
         } else {
             switch (queue.array[i].operator) {
-                case '+': Stack.array[Stack.top-1].value += Stack.array[Stack.top].value; Stack.top--; break;
-                case '-': Stack.array[Stack.top-1].value -= Stack.array[Stack.top].value; Stack.top--; break;
-                case '*': Stack.array[Stack.top-1].value *= Stack.array[Stack.top].value; Stack.top--; break;
-                case '/': Stack.array[Stack.top-1].value /= Stack.array[Stack.top].value; Stack.top--; break;
-                case '^': if (Stack.array[Stack.top-1].value || Stack.array[Stack.top].value) {
-                          Stack.array[Stack.top-1].value =  pow(Stack.array[Stack.top-1].value, Stack.array[Stack.top].value); Stack.top--; break;
+                case '+': SStack.array[SStack.top-1].value += SStack.array[SStack.top].value; SStack.top--; break;
+                case '-': SStack.array[SStack.top-1].value -= SStack.array[SStack.top].value; SStack.top--; break;
+                case '*': SStack.array[SStack.top-1].value *= SStack.array[SStack.top].value; SStack.top--; break;
+                case '/': SStack.array[SStack.top-1].value /= SStack.array[SStack.top].value; SStack.top--; break;
+                case '^': if (SStack.array[SStack.top-1].value || SStack.array[SStack.top].value) {
+                          SStack.array[SStack.top-1].value =  pow(SStack.array[SStack.top-1].value, SStack.array[SStack.top].value); SStack.top--; break;
                           } else {return NAN; break;}
                 
             }
         }
     }
-    return Stack.array[0].value;
+    return SStack.array[0].value;
 } 

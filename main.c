@@ -7,7 +7,11 @@
 
 GtkWidget *entry;
 GtkCssProvider *css_provider;
+
+
 char evString[1000] = {0};
+stack SStack;
+
 typedef struct but but;
 struct but { const char *label; const char *tok; };
 char angle = 'R';
@@ -37,6 +41,7 @@ void on_button_append2(GtkWidget *widget, gpointer data) {
 void on_clear(GtkWidget *widget, gpointer data) {
     gtk_entry_set_text(GTK_ENTRY(entry), "");
     for (int i = 0; i<1000; i++) {evString[i] = 0;}
+    initStack(&SStack);
 }
 
 void on_backs(GtkWidget *widget, gpointer data) {
@@ -70,7 +75,10 @@ void on_equals(GtkWidget *widget, gpointer data) {
         char buffer[256];
         snprintf(buffer, sizeof(buffer), "%g", result);
         gtk_entry_set_text(GTK_ENTRY(entry), buffer);
-        strcpy(evString, buffer);
+        token res = {result, 0, 0, 0, 0, 0};
+        initStack(&SStack);
+        push(&SStack, res);
+        for (int i = 0; i<1000; i++) {evString[i] = 0;}
     }
 }
 
@@ -104,6 +112,7 @@ void toggle_theme(GtkWidget *widget, gpointer data) {
 }
 
 int main(int argc, char *argv[]) {
+    initStack(&SStack);
     gtk_init(&argc, &argv);
 
     // Apply CSS
