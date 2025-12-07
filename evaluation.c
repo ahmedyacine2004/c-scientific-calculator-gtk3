@@ -102,16 +102,19 @@ void postfix(char* infix, stack* postfix) {
 }
 
 double Evaluate(char* string) {
-    stack queue, output, Stack;
-    initStack(&output); initStack(&Stack);
+    stack queue, Stack;
+    initStack(&Stack);
     postfix(string, &queue);
     for (int i = 0; i <= queue.top; i++) {
         if(queue.array[i].isNumber) {push(&Stack, queue.array[i]);}
         else if (queue.array[i].function) {
             switch (queue.array[i].function) {
-                case 'c': Stack.array[Stack.top].value = cos(Stack.array[Stack.top].value); break;
-                case 's': Stack.array[Stack.top].value = sin(Stack.array[Stack.top].value); break;
-                case 't': Stack.array[Stack.top].value = tan(Stack.array[Stack.top].value); break;
+                case 'c': if (angle == 'D') Stack.array[Stack.top].value *= (3.141592/180);    
+                          Stack.array[Stack.top].value = cos(Stack.array[Stack.top].value); break;
+                case 's': if (angle == 'D') Stack.array[Stack.top].value *= (3.141592/180);
+                          Stack.array[Stack.top].value = sin(Stack.array[Stack.top].value); break;
+                case 't': if (angle == 'D') Stack.array[Stack.top].value *= (3.141592/180);
+                          Stack.array[Stack.top].value = tan(Stack.array[Stack.top].value); break;
                 case 'S': if (Stack.array[Stack.top].value >= 0) {
                                 Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
                             } else {return NAN; break;}
