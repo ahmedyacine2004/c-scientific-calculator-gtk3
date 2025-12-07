@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "evaluation.h"
+#include "baseConversion.h"
 
 GtkWidget *entry;
 GtkCssProvider *css_provider;
 char evString[1000] = {0};
 typedef struct but but;
 struct but { const char *label; const char *tok; };
+char angle = 'R';
 
 // Append character to entry
 void on_button_append(GtkWidget *widget, gpointer data) {
@@ -46,6 +48,16 @@ void on_backs(GtkWidget *widget, gpointer data) {
     evString[strlen(evString)-1] = 0;
 }
 
+void on_angle(GtkWidget *widget, gpointer date) {
+    if (angle == 'R') {
+        angle = 'D';
+        gtk_button_set_label(GTK_BUTTON(widget), "DEG");
+    } else {
+        angle = 'R';
+        gtk_button_set_label(GTK_BUTTON(widget), "RAD");
+    }
+}
+
 // Evaluate expression
 void on_equals(GtkWidget *widget, gpointer data) {
     // const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
@@ -59,7 +71,7 @@ void on_equals(GtkWidget *widget, gpointer data) {
         snprintf(buffer, sizeof(buffer), "%g", result);
         gtk_entry_set_text(GTK_ENTRY(entry), buffer);
         strcpy(evString, buffer);
-    } else gtk_entry_set_text(GTK_ENTRY(entry), "");
+    }
 }
 
 // Dark mode CSS (default)
@@ -171,7 +183,13 @@ int main(int argc, char *argv[]) {
     gtk_widget_set_hexpand(zero, TRUE);
     gtk_widget_set_vexpand(zero, TRUE);
     g_signal_connect(zero, "clicked", G_CALLBACK(on_button_append), (gpointer)"0");
-    gtk_grid_attach(GTK_GRID(grid), zero, 0, 6, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), zero, 0, 6, 1, 1);
+
+    GtkWidget *point = gtk_button_new_with_label(".");
+    gtk_widget_set_hexpand(point, TRUE);
+    gtk_widget_set_vexpand(point, TRUE);
+    g_signal_connect(point, "clicked", G_CALLBACK(on_button_append), (gpointer)".");
+    gtk_grid_attach(GTK_GRID(grid), point, 1, 6, 1, 1);
 
     // Operators
     const char *ops[] = {"+","-","*","/"};
@@ -195,6 +213,12 @@ int main(int argc, char *argv[]) {
     gtk_widget_set_vexpand(back, TRUE);
     g_signal_connect(back, "clicked", G_CALLBACK(on_backs), NULL);
     gtk_grid_attach(GTK_GRID(grid), back, 4, 5, 2, 1);
+    
+    GtkWidget *Angle = gtk_button_new_with_label("RAD");
+    gtk_widget_set_hexpand(Angle, TRUE);
+    gtk_widget_set_vexpand(Angle, TRUE);
+    g_signal_connect(Angle, "clicked", G_CALLBACK(on_angle), NULL);
+    gtk_grid_attach(GTK_GRID(grid), Angle, 4, 4, 2, 1);
 
     // Clear button
     GtkWidget *clear = gtk_button_new_with_label("Clear");
