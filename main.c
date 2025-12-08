@@ -16,10 +16,17 @@ struct but { const char *label; const char *tok; };
 char angle = 'R';
 
 double result = 0;
+int eq = 0;
 
 // Append character to entry
 void on_button_append(GtkWidget *widget, gpointer data) {
     const char *txt = (const char *)data;
+    if (strpbrk(txt, "1234567890") && eq == 1) {
+        eq = 0;
+        gtk_entry_set_text(GTK_ENTRY(entry), "");
+        for (int i = 0; i<1000; i++) {evString[i] = 0;}
+        initStack(&SStack);
+    } else eq = 0;
     const char *current = gtk_entry_get_text(GTK_ENTRY(entry));
     char buffer[512];
     snprintf(buffer, sizeof(buffer), "%s%s", current, txt);
@@ -30,6 +37,12 @@ void on_button_append(GtkWidget *widget, gpointer data) {
 void on_button_append2(GtkWidget *widget, gpointer data) {
     but* dat = (but *)data;
     const char *txt = dat->label;
+    if ((dat->tok[0] == 'e' || dat->tok[0] == 'p') && eq == 1) {
+        eq = 0;
+        gtk_entry_set_text(GTK_ENTRY(entry), "");
+        for (int i = 0; i<1000; i++) {evString[i] = 0;}
+        initStack(&SStack);
+    } else eq = 0;
     const char *current = gtk_entry_get_text(GTK_ENTRY(entry));
     char buffer[512];
     snprintf(buffer, sizeof(buffer), "%s%s", current, txt);
@@ -80,6 +93,7 @@ void on_equals(GtkWidget *widget, gpointer data) {
     // const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
     // char expr[600];
     // snprintf(expr, sizeof(expr), "%s~", text);  // Add the mandatory "~"
+    eq = 1;
     if (evString[0]) {
         const char* cond = "~";
         strcat(evString, cond); 
