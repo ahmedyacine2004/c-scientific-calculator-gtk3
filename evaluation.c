@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "evaluation.h"
+#include "custom_math.h"
 
 void initStack(stack* Stack) {
     Stack->top = -1;
@@ -39,13 +40,14 @@ void tokenise(char* string, stack* tokens) {
             if(temp.isNumber) {
                 push(tokens, temp); initToken(&temp);
                 charachterHolder[0] = string[i];
-                if(strpbrk(charachterHolder, "(cstlSep")) push(tokens, multiply);
+                if(strpbrk(charachterHolder, "(cstlSepa")) push(tokens, multiply);
             }
             decimal = 0;
             switch (string[i]) {
                 //constants
                 case 'e': temp.value = 2.718281; temp.isNumber = 1; push(tokens, temp); initToken(&temp);    break;
                 case 'p': temp.value = 3.141592; temp.isNumber = 1; push(tokens, temp); initToken(&temp);    break;
+                case 'a': temp.value = result;   temp.isNumber = 1; push(tokens, temp); initToken(&temp);    break;
 
                 //parentheses
                 case '(': temp.parentheses = '('; push(tokens, temp); initToken(&temp);                  break;
@@ -65,8 +67,9 @@ void tokenise(char* string, stack* tokens) {
                 case 'l': temp.function = 'l'; push(tokens, temp); initToken(&temp);                      break;
                 case 'S': temp.function = 'S'; push(tokens, temp); initToken(&temp);                      break;
                 case 'f': temp.function = 'f'; push(tokens, temp); initToken(&temp);                      break;
+                case '_': temp.function = '_'; push(tokens, temp); initToken(&temp);                      break;
             }
-            if ((tokens->array[tokens->top].parentheses == ')' || tokens->array[tokens->top].value == 2.718281 || tokens->array[tokens->top].value == 3.141592) && ((string[i+1] >= '0' && string[i+1] <= '9') || string[i+1] == 'e' || string[i+1] == 'p')) push(tokens, multiply);
+            if ((tokens->array[tokens->top].parentheses == ')' || tokens->array[tokens->top].value == 2.718281 || tokens->array[tokens->top].value == 3.141592) && ((string[i+1] >= '0' && string[i+1] <= '9') || string[i+1] == 'e' || string[i+1] == 'p' || string[i+1] == 'a')) push(tokens, multiply);
         }
         i++;
     }
@@ -102,39 +105,36 @@ void postfix(char* infix, stack* postfix) {
 }
 
 double Evaluate(char* string) {
-    stack queue, output, Stack;
-    initStack(&output); initStack(&Stack);
+    stack queue;
     postfix(string, &queue);
     for (int i = 0; i <= queue.top; i++) {
-        if(queue.array[i].isNumber) {push(&Stack, queue.array[i]);}
+        if(queue.array[i].isNumber) {push(&SStack, queue.array[i]);}
         else if (queue.array[i].function) {
             switch (queue.array[i].function) {
-                case 'c': Stack.array[Stack.top].value = cos(Stack.array[Stack.top].value); break;
-                case 's': Stack.array[Stack.top].value = sin(Stack.array[Stack.top].value); break;
-                case 't': Stack.array[Stack.top].value = tan(Stack.array[Stack.top].value); break;
-                case 'S': if (Stack.array[Stack.top].value >= 0) {
-                                Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
-                            } else {return NAN; break;}
-                // case 'l': if(Stack.array[Stack.top].value >= 0) {
-                //                 Stack.array[Stack.top].value = ln(Stack.array[Stack.top].value); break;
-                //             } else {return NAN; break;}
-                // case 'f': if(isNatural(Stack.array[Stack.top].value)) {
-                //           Stack.array[Stack.top].value = sqrt(Stack.array[Stack.top].value); break;
-                //             } else {return NAN; break;}          
-                
+                case 'c': if (angle == 'D') SStack.array[SStack.top].value *= (3.141592/180);    
+                          SStack.array[SStack.top].value = cosine(SStack.array[SStack.top].value);            break;
+                case 's': if (angle == 'D') SStack.array[SStack.top].value *= (3.141592/180);
+                          SStack.array[SStack.top].value = sine(SStack.array[SStack.top].value);              break;
+                case 't': if (angle == 'D') SStack.array[SStack.top].value *= (3.141592/180);
+                          SStack.array[SStack.top].value = tangent(SStack.array[SStack.top].value);           break;
+                case 'S': SStack.array[SStack.top].value = square_root(SStack.array[SStack.top].value);       break;
+                case 'l': SStack.array[SStack.top].value = log(SStack.array[SStack.top].value);               break;
+                case 'f': SStack.array[SStack.top].value = factorial(SStack.array[SStack.top].value);         break;     
+                case '_': SStack.array[SStack.top].value *= -1;                                               break;
+        
             }   
         } else {
             switch (queue.array[i].operator) {
-                case '+': Stack.array[Stack.top-1].value += Stack.array[Stack.top].value; Stack.top--; break;
-                case '-': Stack.array[Stack.top-1].value -= Stack.array[Stack.top].value; Stack.top--; break;
-                case '*': Stack.array[Stack.top-1].value *= Stack.array[Stack.top].value; Stack.top--; break;
-                case '/': Stack.array[Stack.top-1].value /= Stack.array[Stack.top].value; Stack.top--; break;
-                case '^': if (Stack.array[Stack.top-1].value || Stack.array[Stack.top].value) {
-                          Stack.array[Stack.top-1].value =  pow(Stack.array[Stack.top-1].value, Stack.array[Stack.top].value); Stack.top--; break;
+                case '+': SStack.array[SStack.top-1].value += SStack.array[SStack.top].value; SStack.top--; break;
+                case '-': SStack.array[SStack.top-1].value -= SStack.array[SStack.top].value; SStack.top--; break;
+                case '*': SStack.array[SStack.top-1].value *= SStack.array[SStack.top].value; SStack.top--; break;
+                case '/': SStack.array[SStack.top-1].value /= SStack.array[SStack.top].value; SStack.top--; break;
+                case '^': if (SStack.array[SStack.top-1].value || SStack.array[SStack.top].value) {
+                          SStack.array[SStack.top-1].value =  pow(SStack.array[SStack.top-1].value, SStack.array[SStack.top].value); SStack.top--; break;
                           } else {return NAN; break;}
                 
             }
         }
     }
-    return Stack.array[0].value;
+    return SStack.array[0].value;
 } 

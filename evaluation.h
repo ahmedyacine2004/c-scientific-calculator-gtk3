@@ -4,8 +4,11 @@
 
 /*THE STRING MUST END WITH AN UNSIGNIFICANT CHARACHTER " default is ~ " FOR THE FUNCTIONS THAT REQUIRE A STRING TO WORK  */
 
-                                                    /*IMPORTANT*/
 
+//a global variable across all files which must be defined in the first .c file to be compiled
+
+extern char angle;
+extern double result;
 
 // this structure facilates the transition from infix to postfix through assigning components to each significant part of the string
 
@@ -21,11 +24,15 @@ struct token {
 
 // this structure combines an array of the previous strutures with an additional component "top" which allows us to determine where the array ends
 
-typedef struct stack stack;
+
 struct stack {
     token array[1000];
     int top;
 };
+
+typedef struct stack stack;
+
+extern stack SStack;
 
 //this prcedure intilizes the top of a stack to -1
 
